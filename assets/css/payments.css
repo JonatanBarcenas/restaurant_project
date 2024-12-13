@@ -1,0 +1,79 @@
+.payments-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.payment-card {
+    background: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.card-type-icon {
+    font-size: 2rem;
+}
+
+.card-details {
+    flex: 1;
+}
+
+.card-number {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.card-info {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.default-badge {
+    display: inline-block;
+    background: #4CAF50;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.card-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.payment-form {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.expiry-inputs {
+    display: flex;
+    gap: 1rem;
+}
+
+.expiry-inputs select {
+    flex: 1;
+    padding: 0.5rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .payment-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .card-actions {
+        width: 100%;
+    }
+}
