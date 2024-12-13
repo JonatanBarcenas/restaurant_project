@@ -1,6 +1,7 @@
-// includes/header.php
 <?php
 session_start();
+require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/functions.php';
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -20,21 +21,22 @@ session_start();
                 <a href="/">Inicio</a>
                 <a href="/menu.php">Menú</a>
                 <a href="/reservations.php">Reservar</a>
-                <?php if(isset($_SESSION['user_id'])): ?>
+                <?php if(isLoggedIn()): ?>
                     <div class="user-menu">
                         <button class="user-button">
                             <?php echo $_SESSION['user_name']; ?> ▼
                         </button>
                         <div class="dropdown-menu">
                             <a href="/user/profile.php">Mi Perfil</a>
-                            <a href="/user/orders.php">Mis Pedidos</a>
+                            <a href="/user/orders/">Mis Pedidos</a>
                             <a href="/user/reservations.php">Mis Reservas</a>
-                            <a href="/user/addresses.php">Direcciones</a>
-                            <a href="/logout.php">Cerrar Sesión</a>
+                            <a href="/user/addresses/">Direcciones</a>
+                            <a href="/user/payments.php">Métodos de Pago</a>
+                            <a href="/auth/logout.php">Cerrar Sesión</a>
                         </div>
                     </div>
                 <?php else: ?>
-                    <a href="/login.php">Ingresar</a>
+                    <a href="/auth/login.php">Ingresar</a>
                 <?php endif; ?>
                 <a href="/cart.php" class="cart-button">
                     Carrito <span class="cart-count">0</span>
