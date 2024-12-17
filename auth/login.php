@@ -1,7 +1,9 @@
 <?php
 require_once '../includes/header.php';
+require_once '../includes/functions.php';
 
-if (isLoggedIn()) {
+
+if (isset($_SESSION['user_id'])) {
     redirect('/');
 }
 
@@ -11,11 +13,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = sanitize($_POST['email']);
     $password = $_POST['password'];
     
-    $database = new Database();
-    $db = $database->getConnection();
+    $cnn = getConnection();
+   
     
-    $query = "SELECT id, name, password, role FROM users WHERE email = ?";
-    $stmt = $db->prepare($query);
+    $query = "SELECT id, name, password FROM users WHERE email = ?";
+    $stmt = $cnn->prepare($query);
     $stmt->execute([$email]);
     
     if ($user = $stmt->fetch(PDO::FETCH_ASSOC)) {

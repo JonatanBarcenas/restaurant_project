@@ -1,27 +1,14 @@
-// config/database.php
+
 <?php
-class Database {
-    private $host = "localhost";
-    private $db_name = "restaurant_db";
-    private $username = "root";
-    private $password = "@Canelo67";
-    public $conn;
-
-    public function getConnection() {
-        $this->conn = null;
-
-        try {
-            $this->conn = new PDO(
-                "mysql:host=" . $this->host . ";dbname=" . $this->db_name,
-                $this->username,
-                $this->password
-            );
-            $this->conn->exec("set names utf8");
-        } catch(PDOException $exception) {
-            echo "Error de conexión: " . $exception->getMessage();
+function getConnection() {
+    try {
+        $cnn = new mysqli("localhost", "root", "@Canelo67", "restaurant_db");
+        if ($cnn->connect_error) {
+            throw new Exception("Error de conexión: " . $cnn->connect_error);
         }
-
-        return $this->conn;
+        return $cnn;
+    } catch (Exception $e) {
+        throw new Exception("Error al conectar con la base de datos: " . $e->getMessage());
     }
 }
 ?>

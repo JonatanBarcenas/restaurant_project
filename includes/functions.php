@@ -1,6 +1,30 @@
 <?php
+function initSession() {
+    $sessionPath = 'C:/Apache24/tmp';
+    if (!file_exists($sessionPath)) {
+        mkdir($sessionPath, 0777, true);
+    }
+    
+    
+    if (session_status() === PHP_SESSION_NONE) {
+        session_save_path($sessionPath);
+        session_start();
+    }
+}
+
 function isLoggedIn() {
-    return isset($_SESSION['user_id']);
+    initSession();
+    $currentFile = basename($_SERVER['PHP_SELF']);
+    $loginPage = 'login.php';
+
+    if (!isset($_SESSION['user_id']) && $currentFile !== $loginPage) {
+        header("Location: ../auth/login.php");
+        exit();
+    }
+}
+
+function getUserName() {
+    return isset($_SESSION['name']) ? $_SESSION['name'] : 'Usuario';
 }
 
 function isAdmin() {

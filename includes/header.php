@@ -1,7 +1,7 @@
 <?php
-session_start();
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/functions.php';
+initSession();
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -9,7 +9,8 @@ require_once __DIR__ . '/functions.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sabores Auténticos</title>
-    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/auth.css">
+   
 </head>
 <body>
     <header>
