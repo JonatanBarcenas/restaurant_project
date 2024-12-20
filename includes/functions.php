@@ -18,7 +18,7 @@ function isLoggedIn() {
     $loginPage = 'login.php';
 
     if (!isset($_SESSION['user_id']) && $currentFile !== $loginPage) {
-        header("Location: ../auth/login.php");
+        header("Location: /restaurant_project/auth/login.php");
         exit();
     }
 }

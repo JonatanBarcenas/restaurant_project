@@ -16,7 +16,7 @@ function initSession() {
 function checkLogin() {
     initSession();
     if (!isset($_SESSION['user_id'])) {
-        header("Location: /../auth/login.php");
+        header("Location: /restaurant_project/auth/login.php");
         exit();
     }
 }

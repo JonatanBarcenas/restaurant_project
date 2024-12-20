@@ -9,8 +9,9 @@ initSession();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sabores Auténticos</title>
-    <link rel="stylesheet" href="/assets/css/auth.css">
-   
+    <link rel="stylesheet" href="/restaurant_project/assets/css/auth.css">
+    <link rel="stylesheet" href="/restaurant_project/assets/css/footer.css">
+    <link rel="stylesheet" href="/restaurant_project/assets/css/navbar.css">
 </head>
 <body>
     <header>
@@ -37,7 +38,7 @@ initSession();
                         </div>
                     </div>
                 <?php else: ?>
-                    <a href="/auth/login.php">Ingresar</a>
+                    <a href="/restaurant_project/auth/login.php">Ingresar</a>
                 <?php endif; ?>
                 <a href="/cart.php" class="cart-button">
                     Carrito <span class="cart-count">0</span>
@@ -45,3 +46,4 @@ initSession();
             </div>
         </nav>
     </header>
+</body>
