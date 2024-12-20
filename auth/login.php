@@ -32,11 +32,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 ?>
 
 
-<div class="auth-container">
+<div class="fondo auth-container">
         <div class="auth-box">
             <div class="tabs">
-                <button class="tab active">Iniciar Sesión</button>
-                <button class="tab">Registrarse</button>
+                <button class="tab active"><a style="text-decoration: none; color: #666; " href="../../restaurant_project/auth/login.php">Iniciar Sesión</a></button>
+                <button class="tab"><a style="text-decoration: none; color: #666; " href="../../restaurant_project/auth/register.php">Registrarse</a></button>
             </div>
 
             <div class="form-content">
@@ -50,12 +50,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <form method="POST" action="">
                     <div class="form-group">
                         <label for="email">Correo Electrónico</label>
-                        <input type="email" id="email" placeholder="ejemplo@email.com">
+                        <input type="email" id="email" placeholder="ejemplo@gmail.com">
                     </div>
 
                     <div class="form-group">
                         <label for="password">Contraseña</label>
-                        <input type="password" id="password">
+                        <input type="password" id="password" placeholder="********">
                     </div>
 
                     <div class="remember-me">

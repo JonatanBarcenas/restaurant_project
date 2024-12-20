@@ -46,6 +46,7 @@ body {
     background: none;
     font-size: 0.9rem;
     color: #666;
+    display: block;
 }
 
 .tab.active {
@@ -170,4 +171,8 @@ body {
 .btn-facebook {
     background-color: #1877f2;
     color: white;
+}
+
+.fondo{
+    background-color: #f0efe9;
 }

@@ -49,7 +49,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <div class="auth-container">
     <div class="auth-box">
-        <h2>Crear una cuenta</h2>
+            <div class="tabs">
+                <button class="tab"><a style="text-decoration: none; color: #666; " href="../../restaurant_project/auth/login.php">Iniciar Sesión</a></button>
+                <button class="tab active"><a style="text-decoration: none; color: #666; " href="../../restaurant_project/auth/register.php">Registrarse</a></button>
+            </div>
+        <h2 class="form-title">Crear una cuenta</h2>
         
         <?php if ($error): ?>
             <div class="alert alert-danger"><?php echo $error; ?></div>
@@ -58,12 +62,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <form method="POST" action="">
             <div class="form-group">
                 <label for="name">Nombre Completo</label>
-                <input type="text" id="name" name="name" required>
+                <input type="text" id="name" name="name" placeholder="Jonatan Barcenas" required>
             </div>
             
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" id="email" name="email" required>
+                <input type="email" id="email" name="email" placeholder="ejemplo@gmail.com" required>
             </div>
             
             <div class="form-group">
@@ -73,15 +77,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             
             <div class="form-group">
                 <label for="password">Contraseña</label>
-                <input type="password" id="password" name="password" required>
+                <input type="password" id="password" name="password" placeholder="**********" required>
             </div>
             
             <div class="form-group">
                 <label for="confirm_password">Confirmar Contraseña</label>
-                <input type="password" id="confirm_password" name="confirm_password" required>
+                <input type="password" id="confirm_password" name="confirm_password" placeholder="**********" required>
             </div>
             
-            <button type="submit" class="btn btn-primary">Crear Cuenta</button>
+            <button type="submit" class="btn-login">Crear Cuenta</button>
         </form>
         
         <div class="auth-links">

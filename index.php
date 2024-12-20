@@ -1,13 +1,12 @@
 <?php
 require_once 'includes/header.php';
 
-$database = new Database();
-$db = $database->getConnection();
+$db = getConnection();
 
 // Obtener categorías de productos
 $query = "SELECT * FROM categories";
-$stmt = $db->query($query);
-$categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$result = $db->query($query);
+$categories = $result->fetch_all(MYSQLI_ASSOC);
 
 // Obtener productos destacados
 $query = "SELECT p.*, c.name as category_name 
@@ -16,18 +15,14 @@ $query = "SELECT p.*, c.name as category_name
           WHERE p.status = 1 
           ORDER BY RAND() 
           LIMIT 4";
-$stmt = $db->query($query);
-$featured_products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$result = $db->query($query);
+$featured_products = $result->fetch_all(MYSQLI_ASSOC);
 ?>
 
 <div class="hero-section">
     <div class="hero-content">
+        <p>Bienvenidos a</p>
         <h1>Sabores Auténticos</h1>
-        <p>Descubre la mejor experiencia gastronómica</p>
-        <div class="hero-buttons">
-            <a href="menu.php" class="btn btn-primary">Ver Menú</a>
-            <a href="reservations.php" class="btn btn-secondary">Hacer Reservación</a>
-        </div>
     </div>
 </div>
 
@@ -38,11 +33,9 @@ $featured_products = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <div class="categories-grid">
             <?php foreach ($categories as $category): ?>
                 <div class="category-card">
-                    <?php if ($category['image']): ?>
-                        <img src="<?php echo htmlspecialchars($category['image']); ?>" 
+                      <img src="/restaurant_project/assets/img/no_image.png" 
                              alt="<?php echo htmlspecialchars($category['name']); ?>"
-                             class="category-image">
-                    <?php endif; ?>
+                             class="category-image"> 
                     <div class="category-info">
                         <h3><?php echo htmlspecialchars($category['name']); ?></h3>
                         <?php if ($category['description']): ?>
@@ -89,31 +82,8 @@ $featured_products = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
 </section>
 
-<!-- Sección de Información -->
-<section class="info-section">
-    <div class="container">
-        <div class="info-grid">
-            <div class="info-card">
-                <div class="info-icon">🕒</div>
-                <h3>Horario</h3>
-                <p>Lunes a Domingo</p>
-                <p>12:00 PM - 10:00 PM</p>
-            </div>
-            <div class="info-card">
-                <div class="info-icon">📍</div>
-                <h3>Ubicación</h3>
-                <p>Calle Principal #123</p>
-                <p>Ciudad de México</p>
-            </div>
-            <div class="info-card">
-                <div class="info-icon">📞</div>
-                <h3>Contacto</h3>
-                <p>Tel: (555) 123-4567</p>
-                <p>info@saboresautenticos.com</p>
-            </div>
-        </div>
-    </div>
-</section>
+<?php require_once 'includes/footer.php'; ?>
+
 
 <!-- Scripts -->
 <script>
@@ -173,4 +143,3 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<?php require_once 'includes/footer.php'; ?>

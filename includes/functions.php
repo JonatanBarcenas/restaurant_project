@@ -15,9 +15,9 @@ function initSession() {
 function isLoggedIn() {
     initSession();
     $currentFile = basename($_SERVER['PHP_SELF']);
-    $loginPage = 'login.php';
+    $allowedPages = ['login.php', 'register.php', 'index.php', 'menu.php'];
 
-    if (!isset($_SESSION['user_id']) && $currentFile !== $loginPage) {
+    if (!isset($_SESSION['user_id']) && !in_array($currentFile, $allowedPages)) {
         header("Location: /restaurant_project/auth/login.php");
         exit();
     }
@@ -51,4 +51,5 @@ function formatDate($date) {
 function formatTime($time) {
     return date('H:i', strtotime($time));
 }
+
 ?>

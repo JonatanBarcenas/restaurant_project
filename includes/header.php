@@ -12,6 +12,7 @@ initSession();
     <link rel="stylesheet" href="/restaurant_project/assets/css/auth.css">
     <link rel="stylesheet" href="/restaurant_project/assets/css/footer.css">
     <link rel="stylesheet" href="/restaurant_project/assets/css/navbar.css">
+    <link rel="stylesheet" href="/restaurant_project/assets/css/index.css">
 </head>
 <body>
     <header>
@@ -20,7 +21,7 @@ initSession();
                 <h1>Sabores Auténticos</h1>
             </div>
             <div class="menu">
-                <a href="/">Inicio</a>
+                <a href="/../../restaurant_project/index.php">Inicio</a>
                 <a href="/menu.php">Menú</a>
                 <a href="/reservations.php">Reservar</a>
                 <?php if(isLoggedIn()): ?>
