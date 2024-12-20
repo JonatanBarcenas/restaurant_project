@@ -29,7 +29,7 @@ $featured_products = $result->fetch_all(MYSQLI_ASSOC);
 <!-- Categorías -->
 <section class="categories-section">
     <div class="container">
-        <h2>Nuestras Categorías</h2>
+        <h2>Nuestras Especialidades</h2>
         <div class="categories-grid">
             <?php foreach ($categories as $category): ?>
                 <div class="category-card">
@@ -38,9 +38,6 @@ $featured_products = $result->fetch_all(MYSQLI_ASSOC);
                              class="category-image"> 
                     <div class="category-info">
                         <h3><?php echo htmlspecialchars($category['name']); ?></h3>
-                        <?php if ($category['description']): ?>
-                            <p><?php echo htmlspecialchars($category['description']); ?></p>
-                        <?php endif; ?>
                         <a href="menu.php?category=<?php echo $category['id']; ?>" 
                            class="btn btn-outline">Ver Platillos</a>
                     </div>
@@ -50,37 +47,6 @@ $featured_products = $result->fetch_all(MYSQLI_ASSOC);
     </div>
 </section>
 
-<!-- Productos Destacados -->
-<section class="featured-section">
-    <div class="container">
-        <h2>Platillos Destacados</h2>
-        <div class="products-grid">
-            <?php foreach ($featured_products as $product): ?>
-                <div class="product-card">
-                    <?php if ($product['image']): ?>
-                        <img src="<?php echo htmlspecialchars($product['image']); ?>" 
-                             alt="<?php echo htmlspecialchars($product['name']); ?>"
-                             class="product-image">
-                    <?php endif; ?>
-                    <div class="product-info">
-                        <h3><?php echo htmlspecialchars($product['name']); ?></h3>
-                        <p class="product-category"><?php echo htmlspecialchars($product['category_name']); ?></p>
-                        <p class="product-description">
-                            <?php echo htmlspecialchars($product['description']); ?>
-                        </p>
-                        <div class="product-footer">
-                            <span class="price"><?php echo formatPrice($product['price']); ?></span>
-                            <button class="btn btn-primary add-to-cart" 
-                                    data-product-id="<?php echo $product['id']; ?>">
-                                Agregar al Carrito
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-        </div>
-    </div>
-</section>
 
 <?php require_once 'includes/footer.php'; ?>
 
