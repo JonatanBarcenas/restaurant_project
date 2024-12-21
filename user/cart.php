@@ -62,7 +62,7 @@ $total = $subtotal + $tax + $shipping;
         <p>Impuestos: <span>$<?php echo number_format($tax, 2); ?></span></p>
         <p>Envío: <span>$<?php echo number_format($shipping, 2); ?></span></p>
         <h3>Total: <span>$<?php echo number_format($total, 2); ?></span></h3>
-        <button class="btn-primary">Proceder al Pago</button>
+        <button class="btn-primaryC">Proceder al Pago</button>
     </div>
 </div>
 

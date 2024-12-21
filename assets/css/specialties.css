@@ -54,10 +54,11 @@ body {
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 1rem;
     max-width: 1300px;
-    margin: 0 auto;
+    margin: 30px auto;
     padding: 0 2rem;
     justify-items: center;
 }
+
 
 .product-card {
     width: 280px;  /* Reducido de 300px */

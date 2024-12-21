@@ -76,7 +76,7 @@ nav {
 }
 
 .dropdown-menu {
-    display: none;
+    display: block;
     position: absolute;
     top: 2.5rem;
     right: 0;
@@ -87,6 +87,9 @@ nav {
     overflow: hidden;
     z-index: 1000;
     min-width: 200px;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0.2s, opacity 0.2s;
 }
 
 .dropdown-menu a {
@@ -103,7 +106,14 @@ nav {
 }
 
 .user-menu:hover .dropdown-menu {
-    display: block;
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Añadir nuevo selector para mantener el menú visible */
+.dropdown-menu:hover {
+    visibility: visible;
+    opacity: 1;
 }
 
 .cart-count {

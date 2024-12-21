@@ -1,0 +1,114 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+.containerR {
+    max-width: 1200px;
+    margin: 50px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    gap: 20px;
+}
+
+.form-sectionR {
+    flex: 1;
+    padding: 20px;
+}
+
+.form-sectionR h2 {
+    margin-bottom: 20px;
+}
+
+.form-sectionR label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.form-sectionR input {
+    width: 400px;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.form-sectionR button {
+    width: 423px;
+    padding: 10px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.form-sectionR button:hover {
+    background-color: #218838;
+}
+
+.map-section {
+    flex: 1;
+    padding: 20px;
+    text-align: center;
+}
+
+.map-section h2 {
+    margin-bottom: 20px;
+}
+
+.map-section .table {
+    display: inline-block;
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    text-align: center;
+    border-radius: 8px;
+    margin: 5px;
+    font-weight: bold;
+    color: #fff;
+    cursor: pointer;
+}
+
+.table.available {
+    background-color: #28a745;
+}
+
+.table.occupied {
+    background-color: #dc3545;
+}
+
+.legend {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.legend div {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.legend span {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border-radius: 3px;
+}
+
+.legend .available-color {
+    background-color: #28a745;
+}
+
+.legend .occupied-color {
+    background-color: #dc3545;
+}

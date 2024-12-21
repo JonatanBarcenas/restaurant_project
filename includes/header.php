@@ -11,6 +11,7 @@ initSession();
     <title>Sabores Auténticos</title>
 
     <link rel="stylesheet" href="/restaurant_project/assets/css/specialties.css">
+    <link rel="stylesheet" href="/restaurant_project/assets/css/do_reservation.css">
     <link rel="stylesheet" href="/restaurant_project/assets/css/cart.css">
     <link rel="stylesheet" href="/restaurant_project/assets/css/auth.css">
     <link rel="stylesheet" href="/restaurant_project/assets/css/footer.css">
@@ -25,8 +26,8 @@ initSession();
             </div>
             <div class="menu">
                 <a href="/restaurant_project/index.php">Inicio</a>
-                <a href="/restaurant_project/menu.php">Menú</a>
-                <a href="/restaurant_project/user/reservations.php">Reservar</a>
+                <a href="/restaurant_project/user/menu.php">Menú</a>
+                <a href="/restaurant_project/user/do_reservation.php">Reservar</a>
                 <?php if(isset($_SESSION['user_id'])): ?>
                     <div class="user-menu">
                         <button class="user-button">
