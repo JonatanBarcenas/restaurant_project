@@ -10,6 +10,8 @@ initSession();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sabores Auténticos</title>
 
+    <script src="/restaurant_project/assets/js/navbar.js"></script>
+
     <link rel="stylesheet" href="/restaurant_project/assets/css/specialties.css">
     <link rel="stylesheet" href="/restaurant_project/assets/css/do_reservation.css">
     <link rel="stylesheet" href="/restaurant_project/assets/css/cart.css">
@@ -35,9 +37,9 @@ initSession();
                         </button>
                         <div class="dropdown-menu">
                             <a href="/restaurant_project/user/profile.php">Mi Perfil</a>
-                            <a href="/restaurant_project/user/orders.php">Mis Pedidos</a>
-                            <a href="/restaurant_project/user/reservations.php">Mis Reservas</a>
-                            <a href="/restaurant_project/user/addresses.php">Direcciones</a>
+                            <a href="/restaurant_project/user/orders/index.php">Mis Pedidos</a>
+                            <a href="/restaurant_project/user/reservations/reservations.php">Mis Reservas</a>
+                            <a href="/restaurant_project/user/addresses/index.php">Direcciones</a>
                             <a href="/restaurant_project/user/payments.php">Métodos de Pago</a>
                             <a href="/restaurant_project/auth/logout.php">Cerrar Sesión</a>
                         </div>

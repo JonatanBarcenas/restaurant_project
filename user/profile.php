@@ -1,18 +1,15 @@
 <?php
 require_once '../includes/header.php';
 
-if (!isLoggedIn()) {
-    redirect('/auth/login.php');
-}
-
-$database = new Database();
-$db = $database->getConnection();
+$db = getConnection();
 
 // Obtener datos del usuario
 $query = "SELECT * FROM users WHERE id = ?";
 $stmt = $db->prepare($query);
-$stmt->execute([$_SESSION['user_id']]);
-$user = $stmt->fetch(PDO::FETCH_ASSOC);
+$stmt->bind_param("i", $_SESSION['user_id']);
+$stmt->execute();
+$result = $stmt->get_result();
+$user = $result->fetch_assoc();
 
 // Manejar actualización de perfil
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -120,14 +117,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <div class="form-section">
                         <h2>Preferencias de Notificación</h2>
                         <div class="form-check">
-                            <input type="checkbox" id="notify_offers" name="notify_offers" 
-                                   <?php echo $user['notify_offers'] ? 'checked' : ''; ?>>
+                            <input type="checkbox" id="notify_offers" name="notify_offers" checked >
                             <label for="notify_offers">Recibir notificaciones de ofertas</label>
                         </div>
 
                         <div class="form-check">
-                            <input type="checkbox" id="notify_reservations" name="notify_reservations"
-                                   <?php echo $user['notify_reservations'] ? 'checked' : ''; ?>>
+                            <input type="checkbox" id="notify_reservations" name="notify_reservations" checked>
                             <label for="notify_reservations">Recordatorios de reservaciones</label>
                         </div>
                     </div>
