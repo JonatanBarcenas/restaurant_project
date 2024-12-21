@@ -16,6 +16,10 @@
             <a href="/restaurant_project/user/addresses.php" class="<?php echo strpos($_SERVER['REQUEST_URI'], 'addresses.php') ? 'active' : ''; ?>">
                 <i class="fas fa-map-marker-alt"></i> Mis Direcciones
             </a>
+            <a href="/restaurant_project/user/payments.php" class="<?php echo strpos($_SERVER['REQUEST_URI'], 'payments.php') ? 'active' : ''; ?>">
+                <i class="fas fa-credit-card"></i> Métodos de Pago
+            </a>
+
         </div>
 
         <!-- Pedidos -->
@@ -32,7 +36,7 @@
 
     <!-- Botón de cerrar sesión -->
     <div class="logout-section">
-        <a href="/restaurant_project/logout.php" class="logout-button">
+        <a href="/restaurant_project/auth/logout.php" class="logout-button">
             <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
         </a>
     </div>

@@ -1,4 +1,5 @@
 <?php
+
 function initSession() {
     $sessionPath = 'C:/Apache24/tmp';
     if (!file_exists($sessionPath)) {

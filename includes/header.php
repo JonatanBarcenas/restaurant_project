@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/functions.php';
 initSession();
@@ -39,10 +40,6 @@ initSession();
                         </button>
                         <div class="dropdown-menu">
                             <a href="/restaurant_project/user/profile.php">Mi Perfil</a>
-                            <a href="/restaurant_project/user/orders/index.php">Mis Pedidos</a>
-                            <a href="/restaurant_project/user/reservations/reservations.php">Mis Reservas</a>
-                            <a href="/restaurant_project/user/addresses/index.php">Direcciones</a>
-                            <a href="/restaurant_project/user/payments.php">Métodos de Pago</a>
                             <a href="/restaurant_project/auth/logout.php">Cerrar Sesión</a>
                         </div>
                     </div>

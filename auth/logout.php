@@ -1,6 +1,8 @@
 <?php
+require_once '../config/config.php';
 session_start();
+session_unset();
 session_destroy();
-header('Location: /auth/login.php');
+header('Location: ' . BASE_URL . '/auth/login.php');
 exit();
 ?>
