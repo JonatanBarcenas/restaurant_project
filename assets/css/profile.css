@@ -95,3 +95,125 @@
         width: 100%;
     }
 }
+
+/* Estilos del layout principal */
+.user-section {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 2rem;
+    margin: 2rem auto;
+    max-width: 1200px;
+}
+
+/* Estilos del sidebar */
+.user-sidebar {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 1rem;
+    height: fit-content;
+    min-height: calc(100vh - 200px);
+    display: flex;
+    flex-direction: column;
+}
+
+.user-info {
+    padding: 1rem;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 1rem;
+}
+
+.user-avatar {
+    font-size: 3rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+}
+
+.user-name {
+    font-weight: 500;
+    color: #333;
+}
+
+.nav-section {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.nav-section h3 {
+    color: #666;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.75rem;
+    padding-left: 1rem;
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex-grow: 1;
+}
+
+.sidebar-nav a {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: #666;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.sidebar-nav a:hover {
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+.sidebar-nav a.active {
+    background-color: #007bff;
+    color: white;
+}
+
+.sidebar-nav a i {
+    width: 20px;
+    text-align: center;
+}
+
+.logout-section {
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+    margin-top: auto;
+}
+
+.logout-button {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: #dc3545;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.logout-button:hover {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .user-section {
+        grid-template-columns: 1fr;
+    }
+    
+    .user-sidebar {
+        margin-bottom: 1rem;
+    }
+}
