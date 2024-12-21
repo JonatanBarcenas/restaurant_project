@@ -8,7 +8,7 @@ body {
 
 .hero-section {
     background-color: #f5f5f5;
-    padding: 3rem 1rem;
+    padding: 2rem 1rem;
     border-radius: 10px;
     max-width: 1200px;
     height: 160px;
@@ -34,7 +34,6 @@ body {
 .categories-section {
     margin: 2rem 0;
     max-height: 250px;
-    padding-bottom: 60px;
 }
 
 .categories-section h2 {
@@ -50,15 +49,16 @@ body {
     flex-wrap: nowrap; /* Evitar salto de línea */
     overflow-x: auto; /* Desplazamiento horizontal */
     gap: 1.5rem;
+    
     max-width: 100%;
     
     margin: 0 auto;
-    margin-left: 45px;
+    margin-left: 55px;
 }
 
 .category-card {
     flex: 0 0 auto; /* Ancho fijo sin encogerse */
-    width: 200px; /* Ancho de las cartas */
+    width: 250px; /* Ancho de las cartas */
     background-color: #fff;
     border: 1px solid #ddd;
     border-radius: 10px;
@@ -74,7 +74,7 @@ body {
 
 .category-image {
     width: 100%;
-    max-height: 150px;
+    max-height: 200px;
     object-fit: cover;
     border-radius: 8px;
     margin-bottom: 1rem;

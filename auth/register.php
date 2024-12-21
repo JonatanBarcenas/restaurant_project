@@ -17,8 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($password !== $confirm_password) {
         $error = "Las contraseñas no coinciden";
     } else {
-        $database = new Database();
-        $db = $database->getConnection();
+        $db = getConnection();
         
         // Verificar si el email ya existe
         $query = "SELECT id FROM users WHERE email = ?";
@@ -34,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmt = $db->prepare($query);
             
             if ($stmt->execute([$name, $email, $phone, $hashed_password])) {
-                $_SESSION['user_id'] = $db->lastInsertId();
+                $_SESSION['user_id'] = $db->insert_id;  // Cambiar lastInsertId() por insert_id
                 $_SESSION['user_name'] = $name;
                 $_SESSION['user_role'] = 'user';
                 
@@ -47,12 +46,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 ?>
 
-<div class="auth-container">
+<div class="fondo auth-container">
     <div class="auth-box">
             <div class="tabs">
                 <button class="tab"><a style="text-decoration: none; color: #666; " href="../../restaurant_project/auth/login.php">Iniciar Sesión</a></button>
                 <button class="tab active"><a style="text-decoration: none; color: #666; " href="../../restaurant_project/auth/register.php">Registrarse</a></button>
             </div>
+            <div class="form-content">
         <h2 class="form-title">Crear una cuenta</h2>
         
         <?php if ($error): ?>
@@ -90,6 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         <div class="auth-links">
             <p>¿Ya tienes cuenta? <a href="login.php">Inicia sesión</a></p>
+        </div>
         </div>
     </div>
 </div>

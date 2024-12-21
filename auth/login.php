@@ -9,28 +9,33 @@ if (isset($_SESSION['user_id'])) {
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $email = sanitize($_POST['email']);
-    $password = $_POST['password'];
+    $email = sanitize($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
     
-    $cnn = getConnection();
-   
-    $query = "SELECT id, name, password, role FROM users WHERE email = ?";
-    $stmt = $cnn->prepare($query);
-    $stmt->execute([$email]);
-    
-    if ($user = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        if (password_verify($password, $user['password'])) {
+    if (empty($email) || empty($password)) {
+        $error = "Por favor complete todos los campos";
+    } else {
+        $cnn = getConnection();
+       
+        $query = "SELECT id, name, password FROM users WHERE email = ?";
+        $stmt = $cnn->prepare($query);
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $user = $result->fetch_assoc();
+        
+        if ($user && password_verify($password, $user['password'])) {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_name'] = $user['name'];
             $_SESSION['user_role'] = $user['role'];
             
-            redirect('/');
+            redirect('/restaurant_project/index.php');
+        } else {
+            $error = "Email o contraseña incorrectos";
         }
     }
-    $error = "Email o contraseña incorrectos";
 }
 ?>
-
 
 <div class="fondo auth-container">
         <div class="auth-box">
@@ -50,12 +55,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <form method="POST" action="">
                     <div class="form-group">
                         <label for="email">Correo Electrónico</label>
-                        <input type="email" id="email" placeholder="ejemplo@gmail.com">
+                        <input type="email" id="email" name="email" placeholder="ejemplo@gmail.com" required>
                     </div>
 
                     <div class="form-group">
                         <label for="password">Contraseña</label>
-                        <input type="password" id="password" placeholder="********">
+                        <input type="password" id="password" name="password" placeholder="********" required>
                     </div>
 
                     <div class="remember-me">

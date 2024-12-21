@@ -8,6 +8,11 @@ $query = "SELECT * FROM categories";
 $result = $db->query($query);
 $categories = $result->fetch_all(MYSQLI_ASSOC);
 
+// Obtener tipos de productos
+$query = "SELECT * FROM dish_type";
+$result = $db->query($query);
+$dish_types = $result->fetch_all(MYSQLI_ASSOC);
+
 // Obtener productos destacados
 $query = "SELECT p.*, c.name as category_name 
           FROM products p 
@@ -31,14 +36,14 @@ $featured_products = $result->fetch_all(MYSQLI_ASSOC);
     <div class="container">
         <h2>Nuestras Especialidades</h2>
         <div class="categories-grid">
-            <?php foreach ($categories as $category): ?>
+            <?php foreach ($dish_types as $dish_type): ?>
                 <div class="category-card">
                       <img src="/restaurant_project/assets/img/no_image.png" 
-                             alt="<?php echo htmlspecialchars($category['name']); ?>"
+                             alt="<?php echo htmlspecialchars($dish_type['name']); ?>"
                              class="category-image"> 
                     <div class="category-info">
-                        <h3><?php echo htmlspecialchars($category['name']); ?></h3>
-                        <a href="menu.php?category=<?php echo $category['id']; ?>" 
+                        <h3><?php echo htmlspecialchars($dish_type['name']); ?></h3>
+                        <a href="user/specialties.php?product_type=<?php echo $dish_type['id']; ?>" 
                            class="btn btn-outline">Ver Platillos</a>
                     </div>
                 </div>

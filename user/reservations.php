@@ -1,12 +1,7 @@
 <?php
 require_once '../includes/header.php';
 
-if (!isLoggedIn()) {
-    redirect('/auth/login.php');
-}
-
-$database = new Database();
-$db = $database->getConnection();
+$db = getConnection();
 
 // Obtener reservaciones del usuario
 $query = "SELECT * FROM reservations WHERE user_id = ? ORDER BY date DESC, time DESC";

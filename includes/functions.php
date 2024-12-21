@@ -15,7 +15,7 @@ function initSession() {
 function isLoggedIn() {
     initSession();
     $currentFile = basename($_SERVER['PHP_SELF']);
-    $allowedPages = ['login.php', 'register.php', 'index.php', 'menu.php'];
+    $allowedPages = ['login.php', 'register.php', 'index.php', 'menu.php', 'specialties.php', 'reservations.php'];
 
     if (!isset($_SESSION['user_id']) && !in_array($currentFile, $allowedPages)) {
         header("Location: /restaurant_project/auth/login.php");
@@ -37,6 +37,9 @@ function redirect($url) {
 }
 
 function sanitize($input) {
+    if ($input === null) {
+        return '';
+    }
     return htmlspecialchars(strip_tags($input));
 }
 
