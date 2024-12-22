@@ -1,16 +1,19 @@
 <?php
 require_once 'includes/admin_header.php';
 
-$database = new Database();
-$db = $database->getConnection();
+$db = getConnection();
 
 // Manejar cambios de estado
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['toggle_status'])) {
-    $query = "UPDATE staff SET status = !status WHERE id = ?";
+    $query = "UPDATE staff SET status = ? WHERE id = ?";
     $stmt = $db->prepare($query);
-    $stmt->execute([$_POST['staff_id']]);
-    header('Location: staff.php?msg=updated');
-    exit();
+    $new_status = isset($_POST['new_status']) ? 1 : 0;
+    $stmt->bind_param("ii", $new_status, $_POST['staff_id']);
+    
+    if ($stmt->execute()) {
+        header('Location: staff.php?msg=updated');
+        exit();
+    }
 }
 ?>
 
@@ -25,15 +28,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['toggle_status'])) {
         <?php
         // Total empleados
         $query = "SELECT COUNT(*) as total FROM staff";
-        $total = $db->query($query)->fetch()['total'];
+        $result = $db->query($query);
+        $total = $result->fetch_assoc()['total'];
 
         // Activos hoy
         $query = "SELECT COUNT(*) as active FROM staff WHERE status = 1";
-        $active = $db->query($query)->fetch()['active'];
+        $result = $db->query($query);
+        $active = $result->fetch_assoc()['active'];
 
         // Próximo turno
         $query = "SELECT COUNT(*) as next FROM staff WHERE shift = 'tarde' AND status = 1";
-        $next_shift = $db->query($query)->fetch()['next'];
+        $result = $db->query($query);
+        $next_shift = $result->fetch_assoc()['next'];
         ?>
 
         <div class="stat-card">
@@ -75,7 +81,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['toggle_status'])) {
             <option value="">Todos los turnos</option>
             <option value="mañana">Mañana</option>
             <option value="tarde">Tarde</option>
-            <option value="noche">Noche</option>
         </select>
         <select id="statusFilter" class="select-input">
             <option value="">Todos los estados</option>
@@ -93,15 +98,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['toggle_status'])) {
                     <th>Rol</th>
                     <th>Turno</th>
                     <th>Estado</th>
-                    <th>Contacto</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 <?php
                 $query = "SELECT * FROM staff ORDER BY name";
-                $stmt = $db->query($query);
-                while ($employee = $stmt->fetch(PDO::FETCH_ASSOC)):
+                $result = $db->query($query);
+                while ($employee = $result->fetch_assoc()):
                 ?>
                 <tr>
                     <td>
@@ -126,23 +130,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['toggle_status'])) {
                             <?php echo $employee['status'] ? 'Activo' : 'Inactivo'; ?>
                         </span>
                     </td>
-                    <td>
-                        <?php if (isset($employee['phone'])): ?>
-                            <div class="contact-info">
-                                <?php echo htmlspecialchars($employee['phone']); ?>
-                            </div>
-                        <?php endif; ?>
-                    </td>
+                    
                     <td>
                         <div class="table-actions">
                             <a href="staff/edit.php?id=<?php echo $employee['id']; ?>" 
-                               class="btn btn-small btn-edit">Editar</a>
+                               class="btn btn-small btn-edit">✏️ Editar</a>
                             <form method="POST" class="inline-form" 
                                   onsubmit="return confirm('¿Está seguro de cambiar el estado del empleado?');">
                                 <input type="hidden" name="toggle_status" value="1">
                                 <input type="hidden" name="staff_id" value="<?php echo $employee['id']; ?>">
+                                <input type="hidden" name="new_status" value="<?php echo $employee['status'] ? '0' : '1'; ?>">
                                 <button type="submit" class="btn btn-small <?php echo $employee['status'] ? 'btn-warning' : 'btn-success'; ?>">
-                                    <?php echo $employee['status'] ? 'Desactivar' : 'Activar'; ?>
+                                    <?php echo $employee['status'] ? '🔴 Desactivar' : '🟢 Activar'; ?>
                                 </button>
                             </form>
                         </div>
@@ -190,5 +189,3 @@ document.addEventListener('DOMContentLoaded', function() {
     statusFilter.addEventListener('change', filterTable);
 });
 </script>
-
-<?php require_once 'includes/admin_footer.php'; ?>

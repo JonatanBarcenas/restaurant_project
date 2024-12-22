@@ -56,4 +56,9 @@ function formatTime($time) {
     return date('H:i', strtotime($time));
 }
 
+function isCurrentPage($page) {
+    $current_file = basename($_SERVER['PHP_SELF']);
+    return $current_file === $page;
+}
+
 ?>

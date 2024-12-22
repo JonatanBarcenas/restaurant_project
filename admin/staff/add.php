@@ -3,16 +3,15 @@ require_once '../includes/admin_header.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     try {
-        $database = new Database();
-        $db = $database->getConnection();
+       
+        $db = getConnection();
         
-        $query = "INSERT INTO staff (name, role, shift, phone, status) VALUES (?, ?, ?, ?, ?)";
+        $query = "INSERT INTO staff (name, role, shift, status) VALUES (?, ?, ?, ?)";
         $stmt = $db->prepare($query);
         $stmt->execute([
             $_POST['name'],
             $_POST['role'],
             $_POST['shift'],
-            $_POST['phone'],
             isset($_POST['status']) ? 1 : 0
         ]);
         
@@ -57,14 +56,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <option value="">Seleccione un turno</option>
                 <option value="mañana">Mañana</option>
                 <option value="tarde">Tarde</option>
-                <option value="noche">Noche</option>
             </select>
         </div>
 
-        <div class="form-group">
-            <label for="phone">Teléfono</label>
-            <input type="tel" id="phone" name="phone" pattern="[0-9]{10}">
-        </div>
 
         <div class="form-check">
             <input type="checkbox" id="status" name="status" checked>
@@ -77,5 +71,3 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
     </form>
 </div>
-
-<?php require_once '../includes/admin_footer.php'; ?>

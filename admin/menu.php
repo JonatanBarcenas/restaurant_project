@@ -1,22 +1,33 @@
 <?php
 require_once 'includes/admin_header.php';
 
-$database = new Database();
-$db = $database->getConnection();
+$db = getConnection();
 
 // Manejar eliminación
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_id'])) {
-    $query = "DELETE FROM products WHERE id = ?";
-    $stmt = $db->prepare($query);
-    $stmt->execute([$_POST['delete_id']]);
-    header('Location: menu.php?msg=deleted');
-    exit();
+    $stmt = $db->prepare("DELETE FROM products WHERE id = ?");
+    $stmt->bind_param("i", $_POST['delete_id']);
+    if ($stmt->execute()) {
+        header('Location: menu.php?msg=deleted');
+        exit();
+    }
 }
 
 // Obtener categorías para el filtro
 $query = "SELECT * FROM categories";
-$stmt = $db->query($query);
-$categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$result = $db->query($query);
+$categories = array();
+while ($row = $result->fetch_assoc()) {
+    $categories[] = $row;
+}
+
+// Obtener productos
+$query = "SELECT p.*, c.name as category_name 
+         FROM products p 
+         LEFT JOIN categories c ON p.category_id = c.id 
+         ORDER BY p.name";
+$result = $db->query($query);
+
 ?>
 
 <div class="menu-manager">
@@ -57,18 +68,10 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </tr>
             </thead>
             <tbody>
-                <?php
-                $query = "SELECT p.*, c.name as category_name 
-                         FROM products p 
-                         LEFT JOIN categories c ON p.category_id = c.id 
-                         ORDER BY p.name";
-                $stmt = $db->query($query);
-                while ($product = $stmt->fetch(PDO::FETCH_ASSOC)):
-                ?>
+                <?php while ($product = $result->fetch_assoc()): ?>
                 <tr>
                     <td>
-                        <img src="<?php echo htmlspecialchars($product['image']); ?>" 
-                             alt="<?php echo htmlspecialchars($product['name']); ?>"
+                        <img src="/restaurant_project/assets/img/no_image.png" 
                              class="product-thumbnail">
                     </td>
                     <td><?php echo htmlspecialchars($product['name']); ?></td>
@@ -128,5 +131,3 @@ document.addEventListener('DOMContentLoaded', function() {
     statusFilter.addEventListener('change', filterTable);
 });
 </script>
-
-<?php require_once 'includes/admin_footer.php'; ?>

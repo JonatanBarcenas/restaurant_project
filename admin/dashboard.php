@@ -1,8 +1,8 @@
 <?php
 require_once 'includes/admin_header.php';
 
-$database = new Database();
-$db = $database->getConnection();
+
+$db = getConnection();
 
 // Obtener estadísticas
 $stats = [
@@ -16,20 +16,22 @@ $stats = [
 $query = "SELECT COUNT(*) as count, SUM(total) as revenue 
           FROM orders 
           WHERE DATE(created_at) = CURDATE()";
-$stmt = $db->query($query);
-$orderStats = $stmt->fetch(PDO::FETCH_ASSOC);
-$stats['daily_orders'] = $orderStats['count'];
-$stats['daily_revenue'] = $orderStats['revenue'];
+$result = $db->query($query);
+$orderStats = $result->fetch_assoc();
+$stats['daily_orders'] = $orderStats['count'] ?? 0;
+$stats['daily_revenue'] = $orderStats['revenue'] ?? 0;
 
 // Personal activo hoy
 $query = "SELECT COUNT(*) as count FROM staff WHERE status = 1";
-$stmt = $db->query($query);
-$stats['active_today'] = $stmt->fetch(PDO::FETCH_ASSOC)['count'];
+$result = $db->query($query);
+$activeStaff = $result->fetch_assoc();
+$stats['active_today'] = $activeStaff['count'] ?? 0;
 
 // Personal próximo turno
 $query = "SELECT COUNT(*) as count FROM staff WHERE shift = 'tarde' AND status = 1";
-$stmt = $db->query($query);
-$stats['next_shift'] = $stmt->fetch(PDO::FETCH_ASSOC)['count'];
+$result = $db->query($query);
+$nextShift = $result->fetch_assoc();
+$stats['next_shift'] = $nextShift['count'] ?? 0;
 ?>
 
 <div class="dashboard-container">
@@ -81,8 +83,8 @@ $stats['next_shift'] = $stmt->fetch(PDO::FETCH_ASSOC)['count'];
                              JOIN users u ON o.user_id = u.id 
                              ORDER BY o.created_at DESC 
                              LIMIT 10";
-                    $stmt = $db->query($query);
-                    while ($order = $stmt->fetch(PDO::FETCH_ASSOC)):
+                    $result = $db->query($query);
+                    while ($order = $result->fetch_assoc()):
                     ?>
                     <tr>
                         <td>#<?php echo $order['id']; ?></td>
@@ -108,39 +110,8 @@ $stats['next_shift'] = $stmt->fetch(PDO::FETCH_ASSOC)['count'];
         </div>
     </div>
 
-    <!-- Gráfico de Ventas -->
-    <div class="sales-chart">
-        <h2>Ventas del Mes</h2>
-        <canvas id="salesChart"></canvas>
-    </div>
+    
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Gráfico de ventas
-    const ctx = document.getElementById('salesChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ['1 Dic', '5 Dic', '10 Dic', '15 Dic', '20 Dic', '25 Dic', '30 Dic'],
-            datasets: [{
-                label: 'Ventas',
-                data: [1200, 1900, 1500, 2100, 1800, 2300, 2000],
-                borderColor: '#FF6B6B',
-                tension: 0.4
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'top',
-                }
-            }
-        }
-    });
-});
-</script>
 
-<?php require_once 'includes/admin_footer.php'; ?>

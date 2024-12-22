@@ -1,8 +1,17 @@
 <?php
 require_once 'includes/admin_header.php';
 
-$database = new Database();
-$db = $database->getConnection();
+$db = getConnection();
+
+// Agregar el manejo de eliminación al principio del archivo
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_id'])) {
+    $stmt = $db->prepare("DELETE FROM inventory WHERE id = ?");
+    $stmt->bind_param("i", $_POST['delete_id']);
+    if ($stmt->execute()) {
+        header('Location: inventory.php?msg=deleted');
+        exit();
+    }
+}
 
 // Manejar actualizaciones de stock
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_stock'])) {
@@ -12,6 +21,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_stock'])) {
     header('Location: inventory.php?msg=updated');
     exit();
 }
+
+// Total de ingredientes
+$query = "SELECT COUNT(*) as total FROM inventory";
+$result = $db->query($query);
+$total = $result->fetch_assoc()['total'];
+
+// Items con stock bajo
+$query = "SELECT COUNT(*) as low FROM inventory WHERE current_stock <= minimum_stock";
+$result = $db->query($query);
+$low_stock = $result->fetch_assoc()['low'];
+
+// Items agotados - Corregido el nombre de la columna
+$query = "SELECT COUNT(*) as out_of_stock FROM inventory WHERE current_stock = 0";
+$result = $db->query($query);
+$out_stock = $result->fetch_assoc()['out_of_stock'];
 ?>
 
 <div class="inventory-manager">
@@ -22,20 +46,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_stock'])) {
 
     <!-- Tarjetas de resumen -->
     <div class="stats-grid">
-        <?php
-        // Total de ingredientes
-        $query = "SELECT COUNT(*) as total FROM inventory";
-        $total = $db->query($query)->fetch()['total'];
-
-        // Items con stock bajo
-        $query = "SELECT COUNT(*) as low FROM inventory WHERE current_stock <= minimum_stock";
-        $low_stock = $db->query($query)->fetch()['low'];
-
-        // Items agotados
-        $query = "SELECT COUNT(*) as out FROM inventory WHERE current_stock = 0";
-        $out_stock = $db->query($query)->fetch()['out'];
-        ?>
-
         <div class="stat-card">
             <div class="stat-icon">📦</div>
             <div class="stat-info">
@@ -96,8 +106,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_stock'])) {
             <tbody>
                 <?php
                 $query = "SELECT * FROM inventory ORDER BY name";
-                $stmt = $db->query($query);
-                while ($item = $stmt->fetch(PDO::FETCH_ASSOC)):
+                $result = $db->query($query);
+                while ($item = $result->fetch_assoc()):
                     $stock_status = $item['current_stock'] <= 0 ? 'out' : 
                                   ($item['current_stock'] <= $item['minimum_stock'] ? 'low' : 'normal');
                 ?>
@@ -128,7 +138,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_stock'])) {
                                 Actualizar Stock
                             </button>
                             <a href="inventory/edit.php?id=<?php echo $item['id']; ?>" 
-                               class="btn btn-small">Editar</a>
+                               class="btn btn-small btn-edit">✏️</a>
+                            <form method="POST" class="delete-form" 
+                                  onsubmit="return confirm('¿Está seguro de eliminar este ingrediente?');">
+                                <input type="hidden" name="delete_id" value="<?php echo $item['id']; ?>">
+                                <button type="submit" class="btn btn-small btn-delete">🗑️</button>
+                            </form>
                         </div>
                     </td>
                 </tr>
@@ -215,5 +230,3 @@ window.onclick = function(event) {
     }
 }
 </script>
-
-<?php require_once 'includes/admin_footer.php'; ?>

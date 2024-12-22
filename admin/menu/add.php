@@ -1,13 +1,15 @@
 <?php
 require_once '../includes/admin_header.php';
 
-$database = new Database();
-$db = $database->getConnection();
+$db = getConnection();
 
 // Obtener categorías
 $query = "SELECT * FROM categories";
-$stmt = $db->query($query);
-$categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$result = $db->query($query);
+$categories = array();
+while ($row = $result->fetch_assoc()) {
+    $categories[] = $row;
+}
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     try {
@@ -28,17 +30,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $query = "INSERT INTO products (category_id, name, description, price, image, status) 
                  VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = $db->prepare($query);
-        $stmt->execute([
+        $stmt->bind_param("issdsi", 
             $_POST['category_id'],
             $_POST['name'],
             $_POST['description'],
             $_POST['price'],
             $image_path,
             isset($_POST['status']) ? 1 : 0
-        ]);
+        );
 
-        header('Location: ../menu.php?msg=added');
-        exit();
+        if ($stmt->execute()) {
+            header('Location: ../menu.php?msg=added');
+            exit();
+        } else {
+            throw new Exception("Error al insertar el producto");
+        }
 
     } catch (Exception $e) {
         $error = $e->getMessage();
@@ -101,5 +107,3 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
     </form>
 </div>
-
-<?php require_once '../includes/admin_footer.php'; ?>

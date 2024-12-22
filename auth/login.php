@@ -17,19 +17,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
         $cnn = getConnection();
        
-        $query = "SELECT id, name, password FROM users WHERE email = ?";
+        $query = "SELECT id, name, password, user_role FROM users WHERE email = ?";
         $stmt = $cnn->prepare($query);
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $result = $stmt->get_result();
         $user = $result->fetch_assoc();
         
-        if ($user && password_verify($password, $user['password'])) {
+        if ($user && $password === $user['password']) {  // Comparación directa en lugar de password_verify
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_name'] = $user['name'];
-            $_SESSION['user_role'] = $user['role'];
+            $_SESSION['user_role'] = $user['user_role'];
             
-            redirect('/restaurant_project/index.php');
+            // Redirigir según el rol
+            if ($user['user_role'] === 'admin') {
+                redirect('/restaurant_project/admin/dashboard.php');
+            } else {
+                redirect('/restaurant_project/index.php');
+            }
         } else {
             $error = "Email o contraseña incorrectos";
         }

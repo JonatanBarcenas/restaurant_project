@@ -27,12 +27,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($stmt->fetch()) {
             $error = "Este email ya está registrado";
         } else {
-            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-            
+            // Eliminar el hash de la contraseña
             $query = "INSERT INTO users (name, email, phone, password) VALUES (?, ?, ?, ?)";
             $stmt = $db->prepare($query);
             
-            if ($stmt->execute([$name, $email, $phone, $hashed_password])) {
+            if ($stmt->execute([$name, $email, $phone, $password])) {
                 $_SESSION['user_id'] = $db->insert_id;  // Cambiar lastInsertId() por insert_id
                 $_SESSION['user_name'] = $name;
                 $_SESSION['user_role'] = 'user';
