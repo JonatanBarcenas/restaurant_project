@@ -1,17 +1,14 @@
 <?php
 require_once '../../includes/header.php';
 
-if (!isLoggedIn()) {
-    redirect('/auth/login.php');
-}
 
 $error = '';
 $address = null;
 
 // Obtener dirección
 if (isset($_GET['id'])) {
-    $database = new Database();
-    $db = $database->getConnection();
+    
+    $db = getConnection();
     
     $query = "SELECT * FROM addresses WHERE id = ? AND user_id = ?";
     $stmt = $db->prepare($query);

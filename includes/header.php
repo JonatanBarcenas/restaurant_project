@@ -14,6 +14,7 @@ initSession();
     <script src="/restaurant_project/assets/js/navbar.js"></script>
 
     <link rel="stylesheet" href="/restaurant_project/assets/css/payments.css">
+    <link rel="stylesheet" href="/restaurant_project/assets/css/addresses.css">
     <link rel="stylesheet" href="/restaurant_project/assets/css/reservations.css">
     <link rel="stylesheet" href="/restaurant_project/assets/css/navbar.css">
     <link rel="stylesheet" href="/restaurant_project/assets/css/specialties.css">

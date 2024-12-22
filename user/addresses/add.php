@@ -1,50 +1,54 @@
 <?php
 require_once '../../includes/header.php';
 
-if (!isLoggedIn()) {
-    redirect('/auth/login.php');
-}
-
 $error = '';
 $success = '';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     try {
-        $database = new Database();
-        $db = $database->getConnection();
+        $db = getConnection();
         
         // Iniciar transacción
-        $db->beginTransaction();
+        $db->autocommit(FALSE);
         
         // Si es la primera dirección o se marca como principal
         if (isset($_POST['is_primary'])) {
-            // Actualizar todas las direcciones como no principales
             $query = "UPDATE addresses SET is_primary = 0 WHERE user_id = ?";
             $stmt = $db->prepare($query);
-            $stmt->execute([$_SESSION['user_id']]);
+            $stmt->bind_param("i", $_SESSION['user_id']);
+            $stmt->execute();
         }
         
         // Insertar nueva dirección
         $query = "INSERT INTO addresses (user_id, alias, street, colony, city, postal_code, references_text, is_primary) 
                  VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $db->prepare($query);
-        $stmt->execute([
+        $is_primary = isset($_POST['is_primary']) ? 1 : 0;
+        
+        $stmt->bind_param("issssssi", 
             $_SESSION['user_id'],
-            sanitize($_POST['alias']),
-            sanitize($_POST['street']),
-            sanitize($_POST['colony']),
-            sanitize($_POST['city']),
-            sanitize($_POST['postal_code']),
-            sanitize($_POST['references']),
-            isset($_POST['is_primary']) ? 1 : 0
-        ]);
+            $_POST['alias'],
+            $_POST['street'],
+            $_POST['colony'],
+            $_POST['city'],
+            $_POST['postal_code'],
+            $_POST['references'],
+            $is_primary
+        );
+        
+        if (!$stmt->execute()) {
+            throw new Exception('Error al guardar la dirección');
+        }
         
         $db->commit();
-        redirect('index.php');
+        header('Location: index.php?msg=success');
+        exit;
         
     } catch (Exception $e) {
-        $db->rollBack();
+        $db->rollback();
         $error = "Error al guardar la dirección. Por favor intente nuevamente.";
+    } finally {
+        $db->autocommit(TRUE);
     }
 }
 ?>
