@@ -1,16 +1,10 @@
 <?php
 require_once '../../includes/header.php';
 
-if (!isLoggedIn()) {
-    redirect('/auth/login.php');
-}
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     try {
-        $database = new Database();
-        $db = $database->getConnection();
+        $db = getConnection();
         
-        // Validar fecha de expiración
         $expiry_month = $_POST['expiry_month'];
         $expiry_year = $_POST['expiry_year'];
         
@@ -18,39 +12,51 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             throw new Exception('Fecha de expiración inválida');
         }
 
-        // Inicio de transacción
-        $db->beginTransaction();
+        // Iniciar transacción
+        $db->autocommit(FALSE);
 
         // Si es el primer método de pago o se marca como predeterminado
         if (isset($_POST['is_default'])) {
             $query = "UPDATE payment_methods SET is_default = 0 WHERE user_id = ?";
             $stmt = $db->prepare($query);
-            $stmt->execute([$_SESSION['user_id']]);
+            $stmt->bind_param("i", $_SESSION['user_id']);
+            $stmt->execute();
         }
 
         // Insertar nuevo método de pago
         $query = "INSERT INTO payment_methods (
-                    user_id, card_type, card_number, cardholder_name,
+                    user_id, card_type, card_number, card_holder,
                     expiry_month, expiry_year, is_default
                 ) VALUES (?, ?, ?, ?, ?, ?, ?)";
         
         $stmt = $db->prepare($query);
-        $stmt->execute([
+        $is_default = isset($_POST['is_default']) ? 1 : 0;
+        
+        $stmt->bind_param("isssssi", 
             $_SESSION['user_id'],
             $_POST['card_type'],
             $_POST['card_number'],
-            $_POST['cardholder_name'],
+            $_POST['card_holder'],  
             $expiry_month,
             $expiry_year,
-            isset($_POST['is_default']) ? 1 : 0
-        ]);
+            $is_default
+        );
+        
+        $stmt->execute();
 
-        $db->commit();
-        redirect('../payments.php?msg=added');
+        if ($stmt->affected_rows > 0) {
+            $db->commit();
+            header('Location: ../payments.php?msg=added');
+            exit;
+        } else {
+            throw new Exception('Error al guardar el método de pago');
+        }
 
     } catch (Exception $e) {
-        $db->rollBack();
+        $db->rollback();
         $error = $e->getMessage();
+    } finally {
+        $db->autocommit(TRUE);
     }
 }
 ?>
@@ -69,12 +75,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <form method="POST" class="payment-form" id="paymentForm">
             <div class="form-group">
                 <label for="card_type">Tipo de Tarjeta*</label>
-                <select id="card_type" name="card_type" required>
-                    <option value="">Seleccione tipo de tarjeta</option>
-                    <option value="visa">Visa</option>
-                    <option value="mastercard">Mastercard</option>
-                    <option value="amex">American Express</option>
-                </select>
+                <div class="card-type-select">
+                    <select id="card_type" name="card_type" style="width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    box-sizing: border-box;
+    background-color: #fafafa;
+    font-size: 0.9rem;" required>
+                        <option value="">Seleccione tipo de tarjeta</option>
+                        <option value="visa" data-icon="fab fa-cc-visa">Visa</option>
+                        <option value="mastercard" data-icon="fab fa-cc-mastercard">Mastercard</option>
+                        <option value="amex" data-icon="fab fa-cc-amex">American Express</option>
+                    </select>
+                </div>
             </div>
 
             <div class="form-group">
@@ -85,8 +99,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
 
             <div class="form-group">
-                <label for="cardholder_name">Nombre del Titular*</label>
-                <input type="text" id="cardholder_name" name="cardholder_name" required>
+                <label for="card_holder">Nombre del Titular*</label>
+                <input type="text" id="card_holder" name="card_holder" required>
             </div>
 
             <div class="form-row">
@@ -134,7 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </div>
 
 <script>
-// Validación del formulario y formato de tarjeta
+
 document.getElementById('paymentForm').addEventListener('submit', function(e) {
     const cardNumber = document.getElementById('card_number').value.replace(/\s/g, '');
     const cvv = document.getElementById('cvv').value;
@@ -152,14 +166,12 @@ document.getElementById('paymentForm').addEventListener('submit', function(e) {
     }
 });
 
-// Formato de número de tarjeta mientras se escribe
 document.getElementById('card_number').addEventListener('input', function(e) {
     let value = e.target.value.replace(/\D/g, '');
     if (value.length > 16) value = value.slice(0, 16);
     e.target.value = value;
 });
 
-// Formato de CVV
 document.getElementById('cvv').addEventListener('input', function(e) {
     let value = e.target.value.replace(/\D/g, '');
     if (value.length > 4) value = value.slice(0, 4);

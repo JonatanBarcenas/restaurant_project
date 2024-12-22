@@ -1,6 +1,8 @@
 <?php
 require_once '../includes/header.php';
 
+$db = getConnection();
+
 // Función para agregar un producto al carrito
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
     $productId = $_POST['product_id'];
@@ -36,6 +38,13 @@ foreach ($_SESSION['cart'] as $product) {
 $tax = $subtotal * 0.10; // 10% de impuestos
 $shipping = 5.00; // Envío fijo
 $total = $subtotal + $tax + $shipping;
+
+$query = "SELECT COUNT(*) as payment_count FROM payment_methods WHERE user_id = ?";
+$stmt = $db->prepare($query);
+$stmt->bind_param("i", $_SESSION['user_id']);
+$stmt->execute();
+$result = $stmt->get_result();
+$payment_count = $result->fetch_assoc()['payment_count'];
 ?>
 
 <div class="order-container">
@@ -62,7 +71,21 @@ $total = $subtotal + $tax + $shipping;
         <p>Impuestos: <span>$<?php echo number_format($tax, 2); ?></span></p>
         <p>Envío: <span>$<?php echo number_format($shipping, 2); ?></span></p>
         <h3>Total: <span>$<?php echo number_format($total, 2); ?></span></h3>
-        <button class="btn-primaryC">Proceder al Pago</button>
+        <?php if (!empty($_SESSION['cart'])): ?>
+            <?php if ($payment_count > 0): ?>
+                <form method="POST" action="process_order.php">
+                    <input type="hidden" name="total" value="<?php echo $total; ?>">
+                    <button type="submit" class="btn-primaryC">Proceder al Pago</button>
+                </form>
+            <?php else: ?>
+                <div class="alert alert-info">
+                    <p>Necesitas agregar un método de pago para continuar</p>
+                    <a href="payments/add.php" class="btn-primaryC">Agregar Método de Pago</a>
+                </div>
+            <?php endif; ?>
+        <?php else: ?>
+            <button class="btn-primaryC" disabled>Proceder al Pago</button>
+        <?php endif; ?>
     </div>
 </div>
 

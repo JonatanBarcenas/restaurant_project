@@ -4,11 +4,17 @@ require_once '../includes/header.php';
 
 $db = getConnection();
 
-// Obtener métodos de pago del usuario
-$query = "SELECT * FROM payment_methods WHERE user_id = ? ORDER BY is_default DESC";
-$stmt = $db->prepare($query);
-$stmt->execute([$_SESSION['user_id']]);
-$payment_methods = $stmt->fetchAll(PDO::FETCH_ASSOC);
+try {
+    $query = "SELECT * FROM payment_methods WHERE user_id = ? ORDER BY is_default DESC";
+    $stmt = $db->prepare($query);
+    $stmt->bind_param("i", $_SESSION['user_id']);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $payment_methods = $result->fetch_all(MYSQLI_ASSOC);
+} catch (mysqli_sql_exception $e) {
+    $payment_methods = [];
+    error_log("Error en la base de datos: " . $e->getMessage());
+}
 ?>
 
 <div class="container">
@@ -22,7 +28,7 @@ $payment_methods = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <div class="user-content">
             <div class="content-header">
                 <h1>Métodos de Pago</h1>
-                <a href="payments/add.php" class="btn btn-primary">+ Agregar Método de Pago</a>
+                <a href="payments/add.php" class="btn btn-primary" style="text-decoration: none;">+ Agregar Método de Pago</a>
             </div>
 
             <?php if (isset($_GET['msg'])): ?>
@@ -42,7 +48,6 @@ $payment_methods = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <?php if (empty($payment_methods)): ?>
                     <div class="empty-state">
                         <p>No tienes métodos de pago guardados</p>
-                        <a href="payments/add.php" class="btn btn-primary">Agregar método de pago</a>
                     </div>
                 <?php else: ?>
                     <?php foreach ($payment_methods as $method): ?>
@@ -88,6 +93,7 @@ $payment_methods = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <?php endif; ?>
                             </div>
                         </div>
+
                     <?php endforeach; ?>
                 <?php endif; ?>
             </div>
@@ -95,4 +101,5 @@ $payment_methods = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
 </div>
 
+<?php require_once '../includes/footer.php'; ?>
 <?php require_once '../includes/footer.php'; ?>
