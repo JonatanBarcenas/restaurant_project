@@ -56,7 +56,7 @@ $addresses = $result->fetch_all(MYSQLI_ASSOC);
                                 <a href="edit.php?id=<?php echo $address['id']; ?>" class="action-btn edit-btn">
                                     <i class="fas fa-edit"></i> Editar
                                 </a>
-                               
+                               <?php if (!$address['is_primary']): ?>
                                     <form method="POST" action="delete.php" class="delete-form" 
                                           onsubmit="return confirm('¿Está seguro de eliminar esta dirección?');">
                                         <input type="hidden" name="address_id" value="<?php echo $address['id']; ?>">
@@ -64,6 +64,7 @@ $addresses = $result->fetch_all(MYSQLI_ASSOC);
                                             <i class="fas fa-trash"></i> Eliminar
                                         </button>
                                     </form>
+                                <?php endif; ?>
                                
                             </div>
                         </div>

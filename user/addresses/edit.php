@@ -13,7 +13,21 @@ if (isset($_GET['id'])) {
     $query = "SELECT * FROM addresses WHERE id = ? AND user_id = ?";
     $stmt = $db->prepare($query);
     $stmt->execute([$_GET['id'], $_SESSION['user_id']]);
-    $address = $stmt->fetch(PDO::FETCH_ASSOC);
+    $stmt->store_result();
+    
+    $address = [];
+    $stmt->bind_result(
+        $address['id'],
+        $address['user_id'],
+        $address['alias'],
+        $address['street'],
+        $address['colony'],
+        $address['city'],
+        $address['postal_code'],
+        $address['references_text'],
+        $address['is_primary']
+    );
+    $stmt->fetch();
     
     if (!$address) {
         redirect('index.php');
