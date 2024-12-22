@@ -1,12 +1,7 @@
 <?php
 require_once '../../includes/header.php';
 
-if (!isLoggedIn()) {
-    redirect('/auth/login.php');
-}
-
-$database = new Database();
-$db = $database->getConnection();
+$db = getConnection();
 
 // Obtener pedidos del usuario
 $query = "SELECT o.*, 
@@ -20,8 +15,10 @@ $query = "SELECT o.*,
           ORDER BY o.created_at DESC";
 
 $stmt = $db->prepare($query);
-$stmt->execute([$_SESSION['user_id']]);
-$orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$stmt->bind_param("i", $_SESSION['user_id']);
+$stmt->execute();
+$result = $stmt->get_result();
+$orders = $result->fetch_all(MYSQLI_ASSOC);
 ?>
 
 <div class="container">
@@ -34,20 +31,20 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <!-- Contenido principal -->
         <div class="user-content">
             <h1>Historial de Pedidos</h1>
-
-            <!-- Pedidos en proceso -->
+            
             <section class="orders-section">
-                <h2>Pedidos Activos</h2>
+                <h2>Pedidos Anteriores</h2>
                 <div class="orders-grid">
                     <?php
-                    $hasActiveOrders = false;
+                    $hasOrders = false;
                     foreach ($orders as $order):
-                        if ($order['status'] != 'completed' && $order['status'] != 'cancelled'):
-                            $hasActiveOrders = true;
+                        $hasOrders = true;
                     ?>
                         <div class="order-card">
                             <div class="order-header">
-                                <span class="order-number">Pedido #<?php echo $order['id']; ?></span>
+                                <div class="order-id-group">
+                                    <span class="order-id">Pedido #<?php echo $order['id']; ?></span>
+                                </div>
                                 <span class="status-badge status-<?php echo $order['status']; ?>">
                                     <?php
                                     $status_text = [
@@ -62,98 +59,46 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             </div>
                             <div class="order-details">
                                 <div class="detail-row">
-                                    <span class="icon">📅</span>
-                                    <span><?php echo formatDate($order['created_at']); ?></span>
+                                    <div class="detail-item">
+                                        <span class="icon">📅</span>
+                                        <span class="text"><?php echo formatDate($order['created_at']); ?></span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="icon">📦</span>
+                                        <span class="text"><?php echo $order['total_items']; ?> productos</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="icon">💰</span>
+                                        <span class="text"><?php echo formatPrice($order['total']); ?></span>
+                                    </div>
                                 </div>
-                                <div class="detail-row">
-                                    <span class="icon">📦</span>
-                                    <span><?php echo $order['total_items']; ?> productos</span>
+                                <div class="order-items">
+                                    <p><?php echo htmlspecialchars($order['items']); ?></p>
                                 </div>
-                                <div class="detail-row">
-                                    <span class="icon">💰</span>
-                                    <span><?php echo formatPrice($order['total']); ?></span>
-                                </div>
-                            </div>
-                            <div class="order-items">
-                                <p><?php echo htmlspecialchars($order['items']); ?></p>
                             </div>
                             <div class="order-actions">
                                 <a href="details.php?id=<?php echo $order['id']; ?>" 
-                                   class="btn btn-primary btn-small">Ver Detalles</a>
-                                <?php if ($order['status'] == 'pending'): ?>
-                                    <form method="POST" action="cancel.php" 
-                                          onsubmit="return confirm('¿Está seguro de cancelar este pedido?');">
-                                        <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
-                                        <button type="submit" class="btn btn-danger btn-small">Cancelar</button>
-                                    </form>
+                                   class="action-btn edit-btn">
+                                   <i class="fas fa-eye"></i> Ver Detalles
+                                </a>
+                                <?php if ($order['status'] == 'completed'): ?>
+                                    <button class="action-btn success-btn" 
+                                            onclick="reorderItems(<?php echo $order['id']; ?>)">
+                                        <i class="fas fa-redo"></i> Pedir de nuevo
+                                    </button>
                                 <?php endif; ?>
                             </div>
                         </div>
-                    <?php
-                        endif;
+                    <?php 
                     endforeach;
                     
-                    if (!$hasActiveOrders):
+                    if (!$hasOrders):
                     ?>
                         <div class="empty-state">
-                            <p>No tienes pedidos activos</p>
-                            <a href="/menu.php" class="btn btn-primary">Ver Menú</a>
+                            <p>No tienes pedidos anteriores</p>
+                            <a href="../../index.php" class="btn btn-primary" style="text-decoration: none;">Ver Menú</a>
                         </div>
                     <?php endif; ?>
-                </div>
-            </section>
-
-            <!-- Historial de pedidos -->
-            <section class="orders-section">
-                <h2>Pedidos Anteriores</h2>
-                <div class="table-container">
-                    <table class="orders-table">
-                        <thead>
-                            <tr>
-                                <th>Pedido #</th>
-                                <th>Fecha</th>
-                                <th>Productos</th>
-                                <th>Total</th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            foreach ($orders as $order):
-                                if ($order['status'] == 'completed' || $order['status'] == 'cancelled'):
-                            ?>
-                                <tr>
-                                    <td><?php echo $order['id']; ?></td>
-                                    <td><?php echo formatDate($order['created_at']); ?></td>
-                                    <td class="order-items-cell">
-                                        <div class="truncate-text">
-                                            <?php echo htmlspecialchars($order['items']); ?>
-                                        </div>
-                                    </td>
-                                    <td><?php echo formatPrice($order['total']); ?></td>
-                                    <td>
-                                        <span class="status-badge status-<?php echo $order['status']; ?>">
-                                            <?php echo $status_text[$order['status']]; ?>
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <a href="details.php?id=<?php echo $order['id']; ?>" 
-                                           class="btn btn-small">Ver Detalles</a>
-                                        <?php if ($order['status'] == 'completed'): ?>
-                                            <button class="btn btn-small btn-success" 
-                                                    onclick="reorderItems(<?php echo $order['id']; ?>)">
-                                                Pedir de nuevo
-                                            </button>
-                                        <?php endif; ?>
-                                    </td>
-                                </tr>
-                            <?php
-                                endif;
-                            endforeach;
-                            ?>
-                        </tbody>
-                    </table>
                 </div>
             </section>
         </div>

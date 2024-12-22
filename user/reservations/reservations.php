@@ -1,27 +1,29 @@
 <?php
-require_once '../includes/header.php';
+require_once '../../includes/header.php';
 
 $db = getConnection();
 
 // Obtener reservaciones del usuario
 $query = "SELECT * FROM reservations WHERE user_id = ? ORDER BY date DESC, time DESC";
 $stmt = $db->prepare($query);
-$stmt->execute([$_SESSION['user_id']]);
-$reservations = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$stmt->bind_param("i", $_SESSION['user_id']);
+$stmt->execute();
+$result = $stmt->get_result();
+$reservations = $result->fetch_all(MYSQLI_ASSOC);
 ?>
 
 <div class="container">
     <div class="user-section">
         <!-- Sidebar de navegación del usuario -->
         <div class="user-sidebar">
-            <?php include '../includes/user_sidebar.php'; ?>
+            <?php include '../../includes/user_sidebar.php'; ?>
         </div>
 
         <!-- Contenido principal -->
         <div class="user-content">
             <div class="content-header">
                 <h1>Mis Reservaciones</h1>
-                <a href="reservations/new.php" class="btn btn-primary">Nueva Reservación</a>
+                <a href="../do_reservation.php" class="btn btn-primary" style="text-decoration: none;">Nueva Reservación</a>
             </div>
 
             <!-- Reservaciones Activas -->
@@ -36,41 +38,50 @@ $reservations = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     ?>
                         <div class="reservation-card">
                             <div class="reservation-header">
-                                <span class="reservation-id">#<?php echo $reservation['id']; ?></span>
+                                <div class="reservation-id-group">
+                                    <span class="reservation-id">Reserva#<?php echo $reservation['id']; ?></span>
+                                    <span class="table-number">Mesa <?php echo $reservation['table_number']; ?></span>
+                                </div>
                                 <span class="status-badge status-<?php echo $reservation['status']; ?>">
                                     <?php echo ucfirst($reservation['status']); ?>
                                 </span>
                             </div>
                             <div class="reservation-details">
-                                <div class="detail-item">
-                                    <span class="icon">📅</span>
-                                    <span class="text"><?php echo formatDate($reservation['date']); ?></span>
+                                <div class="detail-row">
+                                    <div class="detail-item">
+                                        <span class="icon">📅</span>
+                                        <span class="text"><?php echo formatDate($reservation['date']); ?></span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="icon">⏰</span>
+                                        <span class="text"><?php echo formatTime($reservation['time']); ?></span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="icon">👥</span>
+                                        <span class="text"><?php echo $reservation['guests']; ?> personas</span>
+                                    </div>
                                 </div>
-                                <div class="detail-item">
-                                    <span class="icon">⏰</span>
-                                    <span class="text"><?php echo formatTime($reservation['time']); ?></span>
-                                </div>
-                                <div class="detail-item">
-                                    <span class="icon">👥</span>
-                                    <span class="text"><?php echo $reservation['guests']; ?> personas</span>
-                                </div>
-                            </div>
-                            <?php if ($reservation['notes']): ?>
-                                <div class="reservation-notes">
-                                    <p><?php echo htmlspecialchars($reservation['notes']); ?></p>
-                                </div>
-                            <?php endif; ?>
-                            <div class="reservation-actions">
-                                <?php if ($reservation['status'] == 'pending'): ?>
-                                    <a href="reservations/edit.php?id=<?php echo $reservation['id']; ?>" 
-                                       class="btn btn-small">Modificar</a>
-                                    <form method="POST" action="reservations/cancel.php" 
-                                          onsubmit="return confirm('¿Está seguro de cancelar esta reservación?');">
-                                        <input type="hidden" name="reservation_id" value="<?php echo $reservation['id']; ?>">
-                                        <button type="submit" class="btn btn-small btn-danger">Cancelar</button>
-                                    </form>
+                                <?php if (isset($reservation['special_notes']) && !empty($reservation['special_notes'])): ?>
+                                    <div class="reservation-notes">
+                                        <small><?php echo htmlspecialchars($reservation['special_notes']); ?></small>
+                                    </div>
                                 <?php endif; ?>
                             </div>
+                            <?php if ($reservation['status'] == 'pending'): ?>
+                                <div class="reservation-actions">
+                                    <a href="edit.php?id=<?php echo $reservation['id']; ?>" 
+                                       class="action-btn edit-btn">
+                                       <i class="fas fa-edit"></i> Modificar
+                                    </a>
+                                    <form method="POST" action="cancel.php" 
+                                          onsubmit="return confirm('¿Está seguro de cancelar esta reservación?');">
+                                        <input type="hidden" name="reservation_id" value="<?php echo $reservation['id']; ?>">
+                                        <button type="submit" class="action-btn delete-btn">
+                                            <i class="fas fa-times"></i> Cancelar
+                                        </button>
+                                    </form>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     <?php 
                         endif;
@@ -80,7 +91,7 @@ $reservations = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     ?>
                         <div class="empty-state">
                             <p>No tienes reservaciones activas</p>
-                            <a href="reservations/new.php" class="btn btn-primary">Hacer una Reservación</a>
+                            <a href="../do_reservation.php" class="btn btn-primary">Hacer una Reservación</a>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -128,4 +139,4 @@ $reservations = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
 </div>
 
-<?php require_once '../includes/footer.php'; ?>
+<?php require_once '../../includes/footer.php'; ?>
