@@ -1,12 +1,8 @@
 <?php
 require_once '../includes/header.php';
 
-if (!isLoggedIn()) {
-    redirect('/auth/login.php');
-}
 
-$database = new Database();
-$db = $database->getConnection();
+$db = getConnection();
 
 // Obtener métodos de pago del usuario
 $query = "SELECT * FROM payment_methods WHERE user_id = ? ORDER BY is_default DESC";

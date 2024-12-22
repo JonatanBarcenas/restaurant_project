@@ -13,6 +13,7 @@ initSession();
 
     <script src="/restaurant_project/assets/js/navbar.js"></script>
 
+    <link rel="stylesheet" href="/restaurant_project/assets/css/navbar.css">
     <link rel="stylesheet" href="/restaurant_project/assets/css/specialties.css">
     <link rel="stylesheet" href="/restaurant_project/assets/css/profile.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -20,7 +21,6 @@ initSession();
     <link rel="stylesheet" href="/restaurant_project/assets/css/cart.css">
     <link rel="stylesheet" href="/restaurant_project/assets/css/auth.css">
     <link rel="stylesheet" href="/restaurant_project/assets/css/footer.css">
-    <link rel="stylesheet" href="/restaurant_project/assets/css/navbar.css">
     <link rel="stylesheet" href="/restaurant_project/assets/css/index.css">
 </head>
 <body>
@@ -40,7 +40,7 @@ initSession();
                         </button>
                         <div class="dropdown-menu">
                             <a href="/restaurant_project/user/profile.php">Mi Perfil</a>
-                            <a href="/restaurant_project/auth/logout.php">Cerrar Sesión</a>
+                            <a href="/restaurant_project/auth/logout.php" onclick="return confirm('¿Estás seguro de que deseas cerrar sesión?')">Cerrar Sesión</a>
                         </div>
                     </div>
                 <?php else: ?>

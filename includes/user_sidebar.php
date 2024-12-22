@@ -13,7 +13,7 @@
             <a href="/restaurant_project/user/profile.php" class="<?php echo strpos($_SERVER['REQUEST_URI'], 'profile.php') ? 'active' : ''; ?>">
                 <i class="fas fa-user"></i> Mi Perfil
             </a>
-            <a href="/restaurant_project/user/addresses.php" class="<?php echo strpos($_SERVER['REQUEST_URI'], 'addresses.php') ? 'active' : ''; ?>">
+            <a href="/restaurant_project/user/addresses/index.php" class="<?php echo strpos($_SERVER['REQUEST_URI'], 'addresses.php') ? 'active' : ''; ?>">
                 <i class="fas fa-map-marker-alt"></i> Mis Direcciones
             </a>
             <a href="/restaurant_project/user/payments.php" class="<?php echo strpos($_SERVER['REQUEST_URI'], 'payments.php') ? 'active' : ''; ?>">
@@ -25,10 +25,10 @@
         <!-- Pedidos -->
         <div class="nav-section">
             <h3>Mis Pedidos</h3>
-            <a href="/restaurant_project/user/orders.php" class="<?php echo strpos($_SERVER['REQUEST_URI'], 'orders.php') ? 'active' : ''; ?>">
+            <a href="/restaurant_project/user/orders/index.php" class="<?php echo strpos($_SERVER['REQUEST_URI'], 'orders.php') ? 'active' : ''; ?>">
                 <i class="fas fa-shopping-bag"></i> Historial de Pedidos
             </a>
-            <a href="/restaurant_project/user/reservations.php" class="<?php echo strpos($_SERVER['REQUEST_URI'], 'reservations.php') ? 'active' : ''; ?>">
+            <a href="/restaurant_project/user/reservations/reservations.php" class="<?php echo strpos($_SERVER['REQUEST_URI'], 'reservations.php') ? 'active' : ''; ?>">
                 <i class="fas fa-calendar-alt"></i> Mis Reservas
             </a>
         </div>
@@ -36,7 +36,7 @@
 
     <!-- Botón de cerrar sesión -->
     <div class="logout-section">
-        <a href="/restaurant_project/auth/logout.php" class="logout-button">
+        <a href="../auth/logout.php" class="logout-button">
             <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
         </a>
     </div>
