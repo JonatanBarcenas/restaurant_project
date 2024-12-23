@@ -48,12 +48,9 @@ $proxima_hora = $result->fetch_assoc()['total'];
             </div>
         </div>
         <div class="controls-rowA">
-            <button class="btn-new-reservation" style="background-color:rgb(133, 245, 139);
-    color: white;
-    padding: 0.75rem 1.5rem;
-    text-decoration: none;
-    transition: background-color 0.3s;" onclick="openNewReservationModal()">+ Nueva Reserva</button>
-            <input type="date" class="date-pickerA" value="<?php echo date('Y-m-d'); ?>" onchange="filterReservations(this.value)">
+            <a href="reservations/create.php" class="btn-new-reservation">+ Nueva Reserva</a>
+            <input type="date" class="date-pickerA" value="<?php echo date('Y-m-d'); ?>" 
+                   onchange="filterReservations(this.value)">
         </div>
     </div>
 
@@ -91,27 +88,28 @@ $proxima_hora = $result->fetch_assoc()['total'];
                     <th>Fecha</th>
                     <th>Hora</th>
                     <th>Personas</th>
-                    <th>Notas</th>
+                  
                     <th>Estado</th>
                     <th>Acciones</th>
                 </tr>
                 <?php
+                // Modificar la consulta para obtener todas las reservaciones
                 $query = "SELECT r.*, u.name as client_name 
                          FROM reservations r
                          LEFT JOIN users u ON r.user_id = u.id
-                         WHERE DATE(r.date) = CURDATE()
-                         ORDER BY r.time";
+                         ORDER BY r.date DESC, r.time ASC";
                 $result = $db->query($query);
-                if ($result->num_rows > 0) {
+
+                if ($result && $result->num_rows > 0) {
                     while ($reserva = $result->fetch_assoc()):
                 ?>
                 <tr>
                     <td>Mesa <?php echo $reserva['table_number'] ?: 'Sin asignar'; ?></td>
-                    <td><?php echo htmlspecialchars($reserva['client_name']); ?></td>
+                    <td><?php echo htmlspecialchars($reserva['client_name'] ?: 'Cliente no registrado'); ?></td>
                     <td><?php echo date('d/m/Y', strtotime($reserva['date'])); ?></td>
                     <td><?php echo date('H:i', strtotime($reserva['time'])); ?></td>
                     <td><?php echo $reserva['guests']; ?> personas</td>
-                    <td><?php echo htmlspecialchars($reserva['special_notes'] ?? ''); ?></td>
+
                     <td>
                         <span class="status-badge status-<?php echo $reserva['status']; ?>">
                             <?php 
@@ -141,7 +139,7 @@ $proxima_hora = $result->fetch_assoc()['total'];
                 <?php 
                     endwhile;
                 } else {
-                    echo "<tr><td colspan='8' style='text-align: center;'>No hay reservaciones para hoy</td></tr>";
+                    echo "<tr><td colspan='8' style='text-align: center;'>No hay reservaciones registradas</td></tr>";
                 }
                 ?>
             </table>
@@ -150,11 +148,6 @@ $proxima_hora = $result->fetch_assoc()['total'];
 </div>
 
 <script>
-function openNewReservationModal() {
-    // Implementar lógica del modal
-    alert('Implementar modal de nueva reservación');
-}
-
 function filterReservations(date) {
     // Implementar filtrado por fecha
     window.location.href = `reservations.php?date=${date}`;
